@@ -49,8 +49,7 @@ public class AirportServiceImpl implements AirportService {
     }
 
     @Override
-    public AirportResponseDTO getAirportByCode(AirportRequestDTO airportRequestDTO) {
-        String airportCode = airportRequestDTO.getAirportCode();
+    public AirportResponseDTO getAirportByCode(String airportCode) {
         if (airportCode == null || airportCode.trim().isEmpty()) {
             throw new IllegalArgumentException("Airport code cannot be null or empty");
         }
@@ -60,8 +59,7 @@ public class AirportServiceImpl implements AirportService {
     }
 
     @Override
-    public AirportResponseDTO getAirportByName(AirportRequestDTO airportRequestDTO) {
-        String airportName = airportRequestDTO.getAirportName();
+    public AirportResponseDTO getAirportByName(String airportName) {
         if (airportName == null || airportName.trim().isEmpty()) {
             throw new IllegalArgumentException("Airport name cannot be null or empty");
         }
@@ -71,8 +69,7 @@ public class AirportServiceImpl implements AirportService {
     }
 
     @Override
-    public List<AirportResponseDTO> getAirportsByLocation(AirportRequestDTO airportRequestDTO) {
-        String location = airportRequestDTO.getLocation();
+    public List<AirportResponseDTO> getAirportsByLocation(String location) {
         if (location == null || location.trim().isEmpty()) {
             throw new IllegalArgumentException("Location cannot be null or empty");
         }
@@ -83,31 +80,32 @@ public class AirportServiceImpl implements AirportService {
     }
 
     @Override
-    public boolean isAirportExist(AirportRequestDTO airportRequestDTO) {
-        return airportRepository.existsByAirportCode(airportRequestDTO.getAirportCode());
+    public boolean doesAirportExist(String airportCode) {
+        if(airportCode == null || airportCode.trim().isEmpty()) {
+            throw new IllegalArgumentException("Airport code cannot be null or empty");
+        }
+        return airportRepository.existsByAirportCode(airportCode);
     }
     
     @Override
-    public void deleteAirportByCode(AirportRequestDTO airportRequestDTO) {
-        String airportCode = airportRequestDTO.getAirportCode();
+    public boolean deleteAirportByCode(String airportCode) {
         if (airportCode == null || airportCode.trim().isEmpty()) {
             throw new IllegalArgumentException("Airport code cannot be null or empty");
         }
         if (!airportRepository.existsByAirportCode(airportCode)) {
             throw new ResourceNotFoundException("Airport with code " + airportCode + " not found.");
         }
-        airportRepository.deleteByAirportCode(airportCode);
+        return airportRepository.deleteByAirportCode(airportCode);
     }
 
     @Override
-    public void deleteAirportByName(AirportRequestDTO airportRequestDTO) {
-        String airportName = airportRequestDTO.getAirportName();
+    public boolean deleteAirportByName(String airportName) {
         if (airportName == null || airportName.trim().isEmpty()) {
             throw new IllegalArgumentException("Airport name cannot be null or empty");
         }
         airportRepository.findByAirportName(airportName)
                 .orElseThrow(() -> new ResourceNotFoundException("Airport not found with code: " + airportName));
 
-        airportRepository.deleteByAirportName(airportName);
+        return airportRepository.deleteByAirportName(airportName);
     }
 }

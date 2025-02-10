@@ -31,7 +31,7 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
     long countByUserAndStatus(UserEntity user, NotificationStatus status);
 
     // Delete notifications for a user before a specific date
-    void deleteByUserAndCreatedDateBefore(UserEntity user, LocalDateTime createdDate);
+    boolean deleteByUserAndCreatedDateBefore(UserEntity user, LocalDateTime createdDate);
 
-    void deleteByUser(UserEntity user);
+    boolean deleteByUser(UserEntity user);
 }

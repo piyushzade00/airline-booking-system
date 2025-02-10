@@ -10,19 +10,19 @@ public interface UserService {
 
     UserResponseDTO createUser(UserRequestDTO userRequestDTO);
 
-    UserResponseDTO getUserByUsername(UserRequestDTO userRequestDTO);
+    UserResponseDTO getUserByUsername(String userName);
 
-    UserResponseDTO getUserByEmail(UserRequestDTO userRequestDTO);
+    UserResponseDTO getUserByEmail(String email);
 
     List<UserResponseDTO> getAllUsers();
 
-    List<UserResponseDTO> getUsersByRole(UserRequestDTO userRequestDTO);
+    List<UserResponseDTO> getUsersByRole(UserRoles role);
 
-    boolean userExistsByUsername(UserRequestDTO userRequestDTO);
+    boolean userExistsByUsername(String userName);
 
-    boolean userExistsByEmail(UserRequestDTO userRequestDTO);
+    boolean userExistsByEmail(String email);
 
-    void deleteUserByUsername(UserRequestDTO userRequestDTO);
+    boolean deleteUserByUsername(String userName);
 
-    void deleteUserByEmail(UserRequestDTO userRequestDTO);
+    boolean deleteUserByEmail(String email);
 }

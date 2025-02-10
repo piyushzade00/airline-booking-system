@@ -50,4 +50,6 @@ public interface PaymentRepository extends JpaRepository<PaymentEntity, Long> {
 
     // Find payments with specific methods and status
     List<PaymentEntity> findByPaymentMethodAndPaymentStatus(PaymentMethod paymentMethod, PaymentStatus status);
+
+    boolean deleteByPaymentId(long paymentId);
 }

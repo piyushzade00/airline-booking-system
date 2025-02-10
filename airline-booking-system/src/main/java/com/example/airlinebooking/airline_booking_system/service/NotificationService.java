@@ -13,17 +13,17 @@ public interface NotificationService {
 
     NotificationResponseDTO createNotification(NotificationRequestDTO notificationRequestDTO);
 
-    List<NotificationResponseDTO> getNotificationsByUser(NotificationRequestDTO notificationRequestDTO);
+    List<NotificationResponseDTO> getNotificationsByUser(String userName);
 
-    List<NotificationResponseDTO> getNotificationsByUserAndStatus(NotificationRequestDTO notificationRequestDTO, NotificationStatus status);
+    List<NotificationResponseDTO> getNotificationsByUserAndStatus(String userName, NotificationStatus status);
 
-    List<NotificationResponseDTO> getNotificationsByType(NotificationRequestDTO notificationRequestDTO);
+    List<NotificationResponseDTO> getNotificationsByUserAndType(String userName, NotificationType type);
 
-    List<NotificationResponseDTO> getNotificationsAfterDate(NotificationRequestDTO notificationRequestDTO, LocalDateTime createdDate);
+    List<NotificationResponseDTO> getNotificationsAfterDate(String userName, LocalDateTime createdDate);
 
-    long countUnreadNotifications(NotificationRequestDTO notificationRequestDTO);
+    long countUnreadNotifications(String userName);
 
-    void deleteNotificationsBeforeDate(NotificationRequestDTO notificationRequestDTO, LocalDateTime createdDate);
+    boolean deleteNotificationsBeforeDate(String userName, LocalDateTime createdDate);
 
-    void deleteNotificationsByUser(NotificationRequestDTO notificationRequestDTO);
+    boolean deleteNotificationsByUser(String userName);
 }

@@ -22,7 +22,7 @@ public interface AirportRepository extends JpaRepository<AirportEntity, Long> {
 
     boolean existsByAirportCode(String airportCode);
 
-    void deleteByAirportCode(String airportCode);
+    boolean deleteByAirportCode(String airportCode);
 
-    void deleteByAirportName(String airportName);
+    boolean deleteByAirportName(String airportName);
 }

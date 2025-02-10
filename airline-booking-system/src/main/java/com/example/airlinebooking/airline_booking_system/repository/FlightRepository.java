@@ -35,6 +35,6 @@ public interface FlightRepository extends JpaRepository<FlightEntity, Long> {
             LocalDateTime end
     );
 
-    void deleteByFlightNumber(String flightNumber);
+    boolean deleteByFlightNumber(String flightNumber);
 
 }

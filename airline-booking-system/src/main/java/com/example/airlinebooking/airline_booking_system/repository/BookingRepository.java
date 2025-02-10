@@ -3,7 +3,6 @@ package com.example.airlinebooking.airline_booking_system.repository;
 import com.example.airlinebooking.airline_booking_system.entity.BookingEntity;
 import com.example.airlinebooking.airline_booking_system.entity.FlightEntity;
 import com.example.airlinebooking.airline_booking_system.entity.UserEntity;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -28,5 +27,5 @@ public interface BookingRepository extends JpaRepository<BookingEntity, Long> {
 
     List<BookingEntity> findAllBookings();
 
-    void deleteByBookingCode(String bookingCode);
+    boolean deleteByBookingCode(String bookingCode);
 }

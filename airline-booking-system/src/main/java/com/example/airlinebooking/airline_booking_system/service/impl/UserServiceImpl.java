@@ -55,8 +55,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDTO getUserByUsername(UserRequestDTO userRequestDTO) {
-        String userName = userRequestDTO.getUserName();
+    public UserResponseDTO getUserByUsername(String userName) {
         if(userName == null || userName.trim().isEmpty()) {
             throw new IllegalArgumentException("Please provide username.");
         }
@@ -66,8 +65,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDTO getUserByEmail(UserRequestDTO userRequestDTO) {
-        String email = userRequestDTO.getEmail();
+    public UserResponseDTO getUserByEmail(String email) {
         if(email == null || email.trim().isEmpty()) {
             throw new IllegalArgumentException("Please provide username.");
         }
@@ -85,8 +83,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponseDTO> getUsersByRole(UserRequestDTO userRequestDTO) {
-        UserRoles role = userRequestDTO.getRole();
+    public List<UserResponseDTO> getUsersByRole(UserRoles role) {
         if(role == null) {
             throw new IllegalArgumentException("Please provide a valid user role.");
         }
@@ -102,8 +99,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean userExistsByUsername(UserRequestDTO userRequestDTO) {
-        String userName = userRequestDTO.getUserName();
+    public boolean userExistsByUsername(String userName) {
         if(userName == null || userName.trim().isEmpty()) {
             throw new IllegalArgumentException("Please provide username.");
         }
@@ -111,8 +107,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean userExistsByEmail(UserRequestDTO userRequestDTO) {
-        String email = userRequestDTO.getEmail();
+    public boolean userExistsByEmail(String email) {
         if(email == null || email.trim().isEmpty()) {
             throw new IllegalArgumentException("Please provide a valid email.");
         }
@@ -120,27 +115,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUserByUsername(UserRequestDTO userRequestDTO) {
-        String userName = userRequestDTO.getUserName();
+    public boolean deleteUserByUsername(String userName) {
         if(userName == null || userName.trim().isEmpty()) {
             throw new IllegalArgumentException("Please provide username.");
         }
         if (!userRepository.existsByUserName(userName)) {
             throw new UserNotFoundException("No user found with username: " + userName);
         }
-        userRepository.deleteByUserName(userName);
+        return userRepository.deleteByUserName(userName);
     }
 
     @Override
-    public void deleteUserByEmail(UserRequestDTO userRequestDTO) {
-        String email = userRequestDTO.getEmail();
+    public boolean deleteUserByEmail(String email) {
         if(email == null || email.trim().isEmpty()) {
             throw new IllegalArgumentException("Please provide a valid email.");
         }
         if (!userRepository.existsByEmail(email)) {
             throw new UserNotFoundException("No user found with email: " + email);
         }
-        userRepository.deleteByEmail(email);
+        return userRepository.deleteByEmail(email);
     }
 
     public static <T extends Enum<T>> boolean isValidEnumValueStream(Class<T> enumClass, String value) {

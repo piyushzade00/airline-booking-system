@@ -40,12 +40,8 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public PaymentResponseDTO processPayment(PaymentRequestDTO paymentRequestDTO) {
         String bookingCode = paymentRequestDTO.getBookingCode();
-        if(bookingCode == null || bookingCode.trim().isEmpty()) {
-            throw new ResourceNotFoundException("Booking code is empty");
-        }
 
-        BookingEntity bookingEntity = bookingRepository.findByBookingCode(bookingCode)
-                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+        BookingEntity bookingEntity = getBookingEntity(bookingCode);
 
         PaymentEntity paymentEntity = paymentMapper.toEntity(paymentRequestDTO, bookingEntity);
         PaymentEntity savedPayment = paymentRepository.savePaymentEntity(paymentEntity);
@@ -74,14 +70,8 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public List<PaymentResponseDTO> getPaymentsByBooking(PaymentRequestDTO paymentRequestDTO) {
-        String bookingCode = paymentRequestDTO.getBookingCode();
-        if(bookingCode == null || bookingCode.trim().isEmpty()) {
-            throw new ResourceNotFoundException("Booking code is empty");
-        }
-
-        BookingEntity booking = bookingRepository.findByBookingCode(bookingCode)
-                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with ID: " + bookingCode));
+    public List<PaymentResponseDTO> getPaymentsByBooking(String bookingCode) {
+        BookingEntity booking = getBookingEntity(bookingCode);
 
         return paymentRepository.findByBooking(booking)
                 .stream()
@@ -101,18 +91,12 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public List<PaymentResponseDTO> getPaymentsByBookingAndStatus(PaymentRequestDTO paymentRequestDTO, PaymentStatus status) {
+    public List<PaymentResponseDTO> getPaymentsByBookingAndStatus(String bookingCode, PaymentStatus status) {
         if(status == null) {
             throw new ResourceNotFoundException("Payment status is empty");
         }
 
-        String bookingCode = paymentRequestDTO.getBookingCode();
-        if(bookingCode == null || bookingCode.trim().isEmpty()) {
-            throw new ResourceNotFoundException("Booking code is empty");
-        }
-
-        BookingEntity booking = bookingRepository.findByBookingCode(bookingCode)
-                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with ID: " + bookingCode));
+        BookingEntity booking = getBookingEntity(bookingCode);
 
         return paymentRepository.findByBookingAndPaymentStatus(booking, status)
                 .stream()
@@ -136,44 +120,25 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public BigDecimal getTotalAmountPaidForBooking(PaymentRequestDTO paymentRequestDTO) {
-        String bookingCode = paymentRequestDTO.getBookingCode();
-        if(bookingCode == null || bookingCode.trim().isEmpty()) {
-            throw new ResourceNotFoundException("Booking code is empty");
-        }
-
-        BookingEntity booking = bookingRepository.findByBookingCode(bookingCode)
-                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with ID: " + bookingCode));
-
+    public BigDecimal getTotalAmountPaidForBooking(String bookingCode) {
+        BookingEntity booking = getBookingEntity(bookingCode);
         return paymentRepository.getTotalAmountPaid(booking);
     }
 
     @Override
-    public boolean checkPaymentMethodExistsForBooking(PaymentRequestDTO paymentRequestDTO) {
-        String bookingCode = paymentRequestDTO.getBookingCode();
-        if(bookingCode == null || bookingCode.trim().isEmpty()) {
-            throw new ResourceNotFoundException("Booking code is empty");
-        }
-        PaymentMethod paymentMethod = paymentRequestDTO.getPaymentMethod();
+    public boolean checkPaymentMethodExistsForBooking(String bookingCode, PaymentMethod paymentMethod) {
         if(paymentMethod == null) {
             throw new ResourceNotFoundException("Payment method is empty");
         }
 
-        BookingEntity booking = bookingRepository.findByBookingCode(bookingCode)
-                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with ID: " + bookingCode));
+        BookingEntity booking = getBookingEntity(bookingCode);
 
         return paymentRepository.existsByBookingAndPaymentMethod(booking, paymentMethod);
     }
 
     @Override
-    public PaymentResponseDTO getMostRecentPaymentForBooking(PaymentRequestDTO paymentRequestDTO) {
-        String bookingCode = paymentRequestDTO.getBookingCode();
-        if(bookingCode == null || bookingCode.trim().isEmpty()) {
-            throw new ResourceNotFoundException("Booking code is empty");
-        }
-
-        BookingEntity booking = bookingRepository.findByBookingCode(bookingCode)
-                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with ID: " + bookingCode));
+    public PaymentResponseDTO getMostRecentPaymentForBooking(String bookingCode) {
+        BookingEntity booking = getBookingEntity(bookingCode);
 
         PaymentEntity paymentEntity = paymentRepository.findTopByBookingOrderByPaymentDateDesc(booking)
                 .orElseThrow(() -> new ResourceNotFoundException("No payment found for this booking."));
@@ -186,8 +151,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public List<PaymentResponseDTO> getPaymentsByMethodAndStatus(PaymentRequestDTO paymentRequestDTO, PaymentStatus status) {
-        PaymentMethod paymentMethod = paymentRequestDTO.getPaymentMethod();
+    public List<PaymentResponseDTO> getPaymentsByMethodAndStatus(PaymentMethod paymentMethod, PaymentStatus status) {
         if(paymentMethod == null) {
             throw new ResourceNotFoundException("Payment method is empty");
         }
@@ -198,13 +162,23 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void deletePaymentById(Long paymentId) {
+    public boolean deletePaymentByPaymentId(Long paymentId) {
         if(paymentId == null) {
             throw new ResourceNotFoundException("Payment id is empty");
         }
         if (!paymentRepository.existsById(paymentId)) {
             throw new ResourceNotFoundException("Payment not found with ID: " + paymentId);
         }
-        paymentRepository.deleteById(paymentId);
+        return paymentRepository.deleteByPaymentId(paymentId);
+    }
+
+    public BookingEntity getBookingEntity(String bookingCode) {
+        if(bookingCode == null || bookingCode.trim().isEmpty()) {
+            throw new ResourceNotFoundException("Booking code is empty");
+        }
+
+        return bookingRepository.findByBookingCode(bookingCode)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with ID: " + bookingCode));
+
     }
 }

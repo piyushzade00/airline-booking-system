@@ -46,8 +46,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public List<NotificationResponseDTO> getNotificationsByUser(NotificationRequestDTO notificationRequestDTO) {
-        String userName = notificationRequestDTO.getUserName();
+    public List<NotificationResponseDTO> getNotificationsByUser(String userName) {
         UserEntity userEntity = validateAndGetUserEntity(userName);
 
         return notificationRepository.findByUser(userEntity)
@@ -57,12 +56,11 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public List<NotificationResponseDTO> getNotificationsByUserAndStatus(NotificationRequestDTO notificationRequestDTO, NotificationStatus status) {
+    public List<NotificationResponseDTO> getNotificationsByUserAndStatus(String userName, NotificationStatus status) {
         if(status == null) {
             throw new IllegalArgumentException("Notification status cannot be null.");
         }
 
-        String userName = notificationRequestDTO.getUserName();
         UserEntity userEntity = validateAndGetUserEntity(userName);
 
         return notificationRepository.findByUserAndStatus(userEntity, status)
@@ -72,13 +70,11 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public List<NotificationResponseDTO> getNotificationsByType(NotificationRequestDTO notificationRequestDTO) {
-        NotificationType type = notificationRequestDTO.getNotificationType();
+    public List<NotificationResponseDTO> getNotificationsByUserAndType(String userName, NotificationType type) {
         if(type == null) {
             throw new IllegalArgumentException("Notification type cannot be null.");
         }
 
-        String userName = notificationRequestDTO.getUserName();
         UserEntity userEntity = validateAndGetUserEntity(userName);
 
         return notificationRepository.findByUserAndNotificationType(userEntity, type)
@@ -88,12 +84,11 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public List<NotificationResponseDTO> getNotificationsAfterDate(NotificationRequestDTO notificationRequestDTO, LocalDateTime createdDate) {
+    public List<NotificationResponseDTO> getNotificationsAfterDate(String userName, LocalDateTime createdDate) {
         if(createdDate == null) {
             throw new IllegalArgumentException("Notification createdDate cannot be null.");
         }
 
-        String userName = notificationRequestDTO.getUserName();
         UserEntity userEntity = validateAndGetUserEntity(userName);
 
         return notificationRepository.findByUserAndCreatedDateAfter(userEntity, createdDate)
@@ -103,30 +98,27 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public long countUnreadNotifications(NotificationRequestDTO notificationRequestDTO) {
-        String userName = notificationRequestDTO.getUserName();
+    public long countUnreadNotifications(String userName) {
         UserEntity userEntity = validateAndGetUserEntity(userName);
         return notificationRepository.countByUserAndStatus(userEntity, NotificationStatus.UNREAD);
     }
 
     @Override
-    public void deleteNotificationsBeforeDate(NotificationRequestDTO notificationRequestDTO, LocalDateTime createdDate) {
+    public boolean deleteNotificationsBeforeDate(String userName, LocalDateTime createdDate) {
         if(createdDate == null) {
             throw new IllegalArgumentException("Notification createdDate cannot be null.");
         }
 
-        String userName = notificationRequestDTO.getUserName();
         UserEntity userEntity = validateAndGetUserEntity(userName);
 
-        notificationRepository.deleteByUserAndCreatedDateBefore(userEntity, createdDate);
+        return notificationRepository.deleteByUserAndCreatedDateBefore(userEntity, createdDate);
     }
 
     @Override
-    public void deleteNotificationsByUser(NotificationRequestDTO notificationRequestDTO) {
-        String userName = notificationRequestDTO.getUserName();
+    public boolean deleteNotificationsByUser(String userName) {
         UserEntity userEntity = validateAndGetUserEntity(userName);
 
-        notificationRepository.deleteByUser(userEntity);
+        return notificationRepository.deleteByUser(userEntity);
     }
 
     public UserEntity validateAndGetUserEntity(String userName) {

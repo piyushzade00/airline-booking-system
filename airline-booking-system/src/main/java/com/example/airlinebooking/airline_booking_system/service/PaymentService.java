@@ -19,23 +19,23 @@ public interface PaymentService {
 
     List<PaymentResponseDTO> getPaymentsByStatus(PaymentStatus paymentStatus);
 
-    List<PaymentResponseDTO> getPaymentsByBooking(PaymentRequestDTO paymentRequestDTO);
+    List<PaymentResponseDTO> getPaymentsByBooking(String bookingCode);
 
     List<PaymentResponseDTO> getPaymentsByUser(UserEntity user);
 
-    List<PaymentResponseDTO> getPaymentsByBookingAndStatus(PaymentRequestDTO paymentRequestDTO, PaymentStatus status);
+    List<PaymentResponseDTO> getPaymentsByBookingAndStatus(String bookingCode, PaymentStatus status);
 
     List<PaymentResponseDTO> getPaymentsWithinDateRange(LocalDateTime startDate, LocalDateTime endDate);
 
-    BigDecimal getTotalAmountPaidForBooking(PaymentRequestDTO paymentRequestDTO);
+    BigDecimal getTotalAmountPaidForBooking(String bookingCode);
 
-    boolean checkPaymentMethodExistsForBooking(PaymentRequestDTO paymentRequestDTO);
+    boolean checkPaymentMethodExistsForBooking(String bookingCode, PaymentMethod paymentMethod);
 
-    PaymentResponseDTO getMostRecentPaymentForBooking(PaymentRequestDTO paymentRequestDTO);
+    PaymentResponseDTO getMostRecentPaymentForBooking(String bookingCode);
 
     long countSuccessfulPayments();
 
-    List<PaymentResponseDTO> getPaymentsByMethodAndStatus(PaymentRequestDTO paymentRequestDTO, PaymentStatus status);
+    List<PaymentResponseDTO> getPaymentsByMethodAndStatus(PaymentMethod paymentMethod, PaymentStatus status);
 
-    void deletePaymentById(Long paymentId);
+    boolean deletePaymentByPaymentId(Long paymentId);
 }

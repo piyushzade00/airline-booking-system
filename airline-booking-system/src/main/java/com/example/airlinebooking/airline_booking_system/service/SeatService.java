@@ -9,15 +9,15 @@ public interface SeatService {
 
     SeatResponseDTO createSeat(SeatRequestDTO seatRequestDTO);
 
-    List<SeatResponseDTO> getAllSeatsByFlight(SeatRequestDTO seatRequestDTO);
+    List<SeatResponseDTO> getAllSeatsByFlight(String flightNumber);
 
-    List<SeatResponseDTO> getAvailableSeatsByFlight(SeatRequestDTO seatRequestDTO);
+    List<SeatResponseDTO> getAvailableSeatsByFlight(String flightNumber);
 
-    List<SeatResponseDTO> getSeatDetails(SeatRequestDTO seatRequestDTO);
+    List<SeatResponseDTO> getSeatDetails(String flightNumber, List<String> seatNumbers);
 
-    boolean isSeatAvailable(SeatRequestDTO seatRequestDTO);
+    boolean isSeatAvailable(String flightNumber, List<String> seatNumbers);
 
-    long countAvailableSeats(SeatRequestDTO seatRequestDTO);
+    long countAvailableSeats(String flightNumber);
 
-    void markSeatsAsUnavailable(SeatRequestDTO seatRequestDTO);
+    void markSeatsAsUnavailable(String flightNumber, List<String> seatNumbers);
 }

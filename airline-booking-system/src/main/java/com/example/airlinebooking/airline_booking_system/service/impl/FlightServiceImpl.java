@@ -38,7 +38,9 @@ public class FlightServiceImpl implements FlightService {
             throw new IllegalArgumentException("Departure time cannot be after arrival time.");
         }
 
-        Map<String, AirportEntity> sourceAndDestinationEntityMap = getSourceAndDestinationEntity(flightRequestDTO);
+        Map<String, AirportEntity> sourceAndDestinationEntityMap = getSourceAndDestinationEntity(
+                flightRequestDTO.getSourceAirportCode(),
+                flightRequestDTO.getDestinationAirportCode());
 
         FlightEntity flightEntity = flightMapper.toEntity(flightRequestDTO, sourceAndDestinationEntityMap.get("source"), sourceAndDestinationEntityMap.get("destination"));
         FlightEntity savedFlight = flightRepository.saveFlightEntity(flightEntity);
@@ -46,10 +48,9 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public FlightResponseDTO getFlightByNumber(FlightRequestDTO flightRequestDTO) {
-        String flightNumber = flightRequestDTO.getFlightNumber();
+    public FlightResponseDTO getFlightByNumber(String flightNumber) {
         if(flightNumber == null ||flightNumber.trim().isEmpty()) {
-            throw new ResourceNotFoundException("Invalid flight number");
+            throw new IllegalArgumentException("Invalid flight number");
         }
 
         FlightEntity flightEntity = flightRepository.findFlightEntityByFlightNumber(flightNumber)
@@ -58,8 +59,8 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public List<FlightResponseDTO> getFlightsBySourceAndDestination(FlightRequestDTO flightRequestDTO) {
-        Map<String, AirportEntity> sourceAndDestinationEntityMap = getSourceAndDestinationEntity(flightRequestDTO);
+    public List<FlightResponseDTO> getFlightsBySourceAndDestination(String sourceAirportCode, String destinationAirportCode) {
+        Map<String, AirportEntity> sourceAndDestinationEntityMap = getSourceAndDestinationEntity(sourceAirportCode, destinationAirportCode);
 
         return flightRepository.findBySourceAirportEntityAndDestinationAirportEntity(sourceAndDestinationEntityMap.get("source"), sourceAndDestinationEntityMap.get("destination"))
                 .stream()
@@ -79,9 +80,12 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public List<FlightResponseDTO> getFlightsBySource(FlightRequestDTO flightRequestDTO) {
-        AirportEntity sourceAirportEntity = airportRepository.findByAirportCode(flightRequestDTO.getSourceAirportCode())
-                .orElseThrow(()-> new ResourceNotFoundException("Airport not found with code: " + flightRequestDTO.getSourceAirportCode()));
+    public List<FlightResponseDTO> getFlightsBySource(String sourceAirportCode) {
+        if(sourceAirportCode == null || sourceAirportCode.trim().isEmpty()) {
+            throw new IllegalArgumentException("Invalid destination Airport code");
+        }
+        AirportEntity sourceAirportEntity = airportRepository.findByAirportCode(sourceAirportCode)
+                .orElseThrow(()-> new ResourceNotFoundException("Airport not found with code: " + sourceAirportCode));
 
         return flightRepository.findBySourceAirportEntity(sourceAirportEntity)
                 .stream()
@@ -90,9 +94,12 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public List<FlightResponseDTO> getFlightsByDestination(FlightRequestDTO flightRequestDTO) {
-        AirportEntity destinationAirportEntity = airportRepository.findByAirportCode(flightRequestDTO.getDestinationAirportCode())
-                .orElseThrow(()-> new ResourceNotFoundException("Airport not found with code: " + flightRequestDTO.getDestinationAirportCode()));
+    public List<FlightResponseDTO> getFlightsByDestination(String destinationAirportCode) {
+        if(destinationAirportCode == null || destinationAirportCode.trim().isEmpty()) {
+            throw new IllegalArgumentException("Invalid destination Airport code");
+        }
+        AirportEntity destinationAirportEntity = airportRepository.findByAirportCode(destinationAirportCode)
+                .orElseThrow(()-> new ResourceNotFoundException("Airport not found with code: " + destinationAirportCode));
 
         return flightRepository.findByDestinationAirportEntity(destinationAirportEntity)
                 .stream()
@@ -101,10 +108,9 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public List<FlightResponseDTO> getFlightsByAirlineName(FlightRequestDTO flightRequestDTO) {
-        String airlineName = flightRequestDTO.getAirlineName();
+    public List<FlightResponseDTO> getFlightsByAirlineName(String airlineName) {
         if(airlineName == null || airlineName.trim().isEmpty()) {
-            throw new ResourceNotFoundException("Airline name cannot be null or empty.");
+            throw new IllegalArgumentException("Airline name cannot be null or empty.");
         }
         return flightRepository.findByAirlineName(airlineName)
                 .stream()
@@ -121,23 +127,20 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public void deleteFlightByNumber(FlightRequestDTO flightRequestDTO) {
-        String flightNumber = flightRequestDTO.getFlightNumber();
+    public boolean deleteFlightByNumber(String flightNumber) {
         if (flightNumber == null || flightNumber.trim().isEmpty()) {
             throw new IllegalArgumentException("Flight number cannot be null or empty.");
         }
        flightRepository.findFlightEntityByFlightNumber(flightNumber)
                .orElseThrow(() -> new ResourceNotFoundException("Flight not found with number: " + flightNumber));
-        flightRepository.deleteByFlightNumber(flightNumber);
+        return flightRepository.deleteByFlightNumber(flightNumber);
     }
 
-    public Map<String, AirportEntity> getSourceAndDestinationEntity(FlightRequestDTO flightRequestDTO) {
-        String sourceAirportCode = flightRequestDTO.getSourceAirportCode();
+    public Map<String, AirportEntity> getSourceAndDestinationEntity(String sourceAirportCode, String destinationAirportCode) {
         if (sourceAirportCode == null || sourceAirportCode.trim().isEmpty()) {
             throw new ResourceNotFoundException("Source airport code is empty");
         }
 
-        String destinationAirportCode = flightRequestDTO.getDestinationAirportCode();
         if (destinationAirportCode == null || destinationAirportCode.trim().isEmpty()) {
             throw new ResourceNotFoundException("Destination airport code is empty");
         }

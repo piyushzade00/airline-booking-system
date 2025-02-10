@@ -84,8 +84,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingResponseDTO getBookingByCode(BookingRequestDTO bookingRequestDTO) {
-        String bookingCode = bookingRequestDTO.getBookingCode();
+    public BookingResponseDTO getBookingByCode(String bookingCode) {
         if (bookingCode == null || bookingCode.trim().isEmpty()) {
             throw new IllegalArgumentException("Booking code cannot be null or empty");
         }
@@ -95,8 +94,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingResponseDTO> getBookingsByUser(BookingRequestDTO bookingRequestDTO) {
-        String userName = bookingRequestDTO.getUserName();
+    public List<BookingResponseDTO> getBookingsByUser(String userName) {
         if (userName == null || userName.trim().isEmpty()) {
             throw new IllegalArgumentException("Username cannot be null or empty");
         }
@@ -110,8 +108,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingResponseDTO> getBookingsByFlight(BookingRequestDTO bookingRequestDTO) {
-        String flightNumber = bookingRequestDTO.getFlightNumber();
+    public List<BookingResponseDTO> getBookingsByFlight(String flightNumber) {
         if (flightNumber == null || flightNumber.trim().isEmpty()) {
             throw new IllegalArgumentException("Flight number cannot be null or empty");
         }
@@ -144,14 +141,13 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public void deleteBookingByCode(BookingRequestDTO bookingRequestDTO) {
-        String bookingCode = bookingRequestDTO.getBookingCode();
+    public boolean deleteBookingByCode(String bookingCode) {
         if (bookingCode == null || bookingCode.trim().isEmpty()) {
             throw new IllegalArgumentException("Booking code cannot be null or empty");
         }
         bookingRepository.findByBookingCode(bookingCode)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found with code: " + bookingCode));
 
-        bookingRepository.deleteByBookingCode(bookingCode);
+        return bookingRepository.deleteByBookingCode(bookingCode);
     }
 }

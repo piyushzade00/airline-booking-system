@@ -10,11 +10,11 @@ public interface PassengerService {
 
     PassengerResponseDTO addPassenger(PassengerRequestDTO passengerRequestDTO);
 
-    List<PassengerResponseDTO> getPassengersByBooking(PassengerRequestDTO passengerRequestDTO);
+    List<PassengerResponseDTO> getPassengersByBooking(String bookingCode);
 
-    List<PassengerResponseDTO> getPassengersByName(PassengerRequestDTO passengerRequestDTO);
+    List<PassengerResponseDTO> getPassengersByName(String passengerFullName);
 
     List<PassengerResponseDTO> getAllPassengers();
 
-    void deletePassengerById(Long passengerId);
+    boolean deletePassengerById(Long passengerId);
 }

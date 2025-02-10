@@ -49,8 +49,8 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
-    public List<SeatResponseDTO> getAllSeatsByFlight(SeatRequestDTO seatRequestDTO) {
-        FlightEntity flightEntity = findFlightByFlightNumber(seatRequestDTO.getFlightNumber());
+    public List<SeatResponseDTO> getAllSeatsByFlight(String flightNumber) {
+        FlightEntity flightEntity = findFlightByFlightNumber(flightNumber);
 
         return seatRepository.findAllSeatsByFlight(flightEntity)
                 .stream()
@@ -59,8 +59,8 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
-    public List<SeatResponseDTO> getAvailableSeatsByFlight(SeatRequestDTO seatRequestDTO) {
-        FlightEntity flightEntity = findFlightByFlightNumber(seatRequestDTO.getFlightNumber());
+    public List<SeatResponseDTO> getAvailableSeatsByFlight(String flightNumber) {
+        FlightEntity flightEntity = findFlightByFlightNumber(flightNumber);
 
         return seatRepository.findByFlightAndIsAvailableTrue(flightEntity)
                 .stream()
@@ -69,12 +69,12 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
-    public List<SeatResponseDTO> getSeatDetails(SeatRequestDTO seatRequestDTO) {
-        FlightEntity flightEntity = findFlightByFlightNumber(seatRequestDTO.getFlightNumber());
+    public List<SeatResponseDTO> getSeatDetails(String flightNumber, List<String> seatNumbers) {
+        FlightEntity flightEntity = findFlightByFlightNumber(flightNumber);
 
         List<SeatResponseDTO> seatResponseDTO = new ArrayList<>();
 
-        for(String seatNumber : seatRequestDTO.getSeatNumbers()) {
+        for(String seatNumber : seatNumbers) {
             SeatEntity seatEntity = seatRepository.findByFlightAndSeatNumber(flightEntity, seatNumber)
                     .orElseThrow(() -> new ResourceNotFoundException("Seat not found for seat number: " + seatNumber));
 
@@ -85,29 +85,29 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
-    public boolean isSeatAvailable(SeatRequestDTO seatRequestDTO) {
-        int seatSize = seatRequestDTO.getSeatNumbers().size();
+    public boolean isSeatAvailable(String flightNumber, List<String> seatNumbers) {
+        int seatSize = seatNumbers.size();
         if(seatSize < 1)
             throw new IllegalArgumentException("Please provide at least one seat number.");
         if(seatSize > 1)
             throw new ResourceNotFoundException("Please provide one seat number.");
 
-        FlightEntity flightEntity = findFlightByFlightNumber(seatRequestDTO.getFlightNumber());
+        FlightEntity flightEntity = findFlightByFlightNumber(flightNumber);
 
-        return seatRepository.existsByFlightAndSeatNumberAndIsAvailableTrue(flightEntity, seatRequestDTO.getSeatNumbers().get(0));
+        return seatRepository.existsByFlightAndSeatNumberAndIsAvailableTrue(flightEntity, seatNumbers.get(0));
     }
 
     @Override
-    public long countAvailableSeats(SeatRequestDTO seatRequestDTO) {
-        FlightEntity flightEntity = findFlightByFlightNumber(seatRequestDTO.getFlightNumber());
+    public long countAvailableSeats(String flightNumber) {
+        FlightEntity flightEntity = findFlightByFlightNumber(flightNumber);
         return seatRepository.countByFlightAndIsAvailableTrue(flightEntity);
     }
 
     @Transactional
     @Override
-    public void markSeatsAsUnavailable(SeatRequestDTO seatRequestDTO) {
-        FlightEntity flightEntity = findFlightByFlightNumber(seatRequestDTO.getFlightNumber());
-        seatRepository.markSeatsAsUnavailable(flightEntity, seatRequestDTO.getSeatNumbers());
+    public void markSeatsAsUnavailable(String flightNumber, List<String> seatNumbers) {
+        FlightEntity flightEntity = findFlightByFlightNumber(flightNumber);
+        seatRepository.markSeatsAsUnavailable(flightEntity, seatNumbers);
     }
 
     private FlightEntity findFlightByFlightNumber(String flightNumber) {

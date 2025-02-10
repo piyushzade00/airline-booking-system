@@ -65,8 +65,7 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
-    public List<PassengerResponseDTO> getPassengersByBooking(PassengerRequestDTO passengerRequestDTO) {
-        String bookingCode = passengerRequestDTO.getBookingCode();
+    public List<PassengerResponseDTO> getPassengersByBooking(String bookingCode) {
         if(bookingCode == null || bookingCode.trim().isEmpty())
         {
             throw new ResourceNotFoundException("Booking code is empty");
@@ -82,8 +81,7 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
-    public List<PassengerResponseDTO> getPassengersByName(PassengerRequestDTO passengerRequestDTO) {
-        String passengerFullName = passengerRequestDTO.getPassengerFullName();
+    public List<PassengerResponseDTO> getPassengersByName(String passengerFullName) {
         if(passengerFullName == null || passengerFullName.trim().isEmpty())
         {
             throw new ResourceNotFoundException("Passenger full name is empty");
@@ -103,10 +101,10 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
-    public void deletePassengerById(Long passengerId) {
+    public boolean deletePassengerById(Long passengerId) {
         if (!passengerRepository.existsById(passengerId)) {
             throw new ResourceNotFoundException("Passenger not found with ID: " + passengerId);
         }
-        passengerRepository.deleteByPassengerId(passengerId);
+        return passengerRepository.deleteByPassengerId(passengerId);
     }
 }

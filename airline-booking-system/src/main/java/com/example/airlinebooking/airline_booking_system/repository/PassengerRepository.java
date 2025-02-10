@@ -18,6 +18,6 @@ public interface PassengerRepository extends JpaRepository<PassengerEntity, Long
 
     List<PassengerEntity> findAllPassengers();
 
-    void deleteByPassengerId(Long passengerId);
+    boolean deleteByPassengerId(Long passengerId);
 
 }
