@@ -12,7 +12,6 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class TokenBlacklistServiceImpl implements TokenBlacklistService {
 
-    private final Set<String> blacklistedTokens = new HashSet<>();
     private final RedisTemplate<String, String> redisTemplate;
     private static final String TOKEN_PREFIX = "blacklisted_token:";
 

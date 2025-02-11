@@ -2,7 +2,6 @@ package com.example.airlinebooking.airline_booking_system.controller;
 
 import com.example.airlinebooking.airline_booking_system.dto.booking.BookingRequestDTO;
 import com.example.airlinebooking.airline_booking_system.dto.booking.BookingResponseDTO;
-import com.example.airlinebooking.airline_booking_system.exception.ResourceNotFoundException;
 import com.example.airlinebooking.airline_booking_system.service.BookingService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

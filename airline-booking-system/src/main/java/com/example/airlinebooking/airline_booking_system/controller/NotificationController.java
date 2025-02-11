@@ -84,7 +84,7 @@ public class NotificationController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/delete-notifications-by-user")
+    @DeleteMapping("/delete-notifications-by-user/{userName}")
     public ResponseEntity<Boolean> deleteNotificationsByUser(@PathVariable String userName) {
         boolean isDeleted = notificationService.deleteNotificationsByUser(userName);
         return ResponseEntity.ok(isDeleted);
