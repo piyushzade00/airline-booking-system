@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -24,12 +25,14 @@ public class BookingController {
         this.bookingService = bookingService;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @PostMapping("/create-booking")
     public ResponseEntity<BookingResponseDTO> createBooking(@Valid @RequestBody BookingRequestDTO bookingRequestDTO) {
         BookingResponseDTO response = bookingService.createBooking(bookingRequestDTO);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @GetMapping("/get-booking-by-code/{bookingCode}")
     public ResponseEntity<BookingResponseDTO> getBookingByCode(@PathVariable String bookingCode) {
         BookingResponseDTO response = bookingService.getBookingByCode(bookingCode);
@@ -37,18 +40,21 @@ public class BookingController {
 
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @GetMapping("/get-booking-by-user/{userName}")
     public ResponseEntity<List<BookingResponseDTO>> getBookingsByUser(@PathVariable String userName) {
         List<BookingResponseDTO> responses = bookingService.getBookingsByUser(userName);
         return ResponseEntity.ok(responses);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @GetMapping("/get-booking-by-flight/{flightNumber}")
     public ResponseEntity<List<BookingResponseDTO>> getBookingsByFlight(@PathVariable String flightNumber) {
         List<BookingResponseDTO> responses = bookingService.getBookingsByFlight(flightNumber);
         return ResponseEntity.ok(responses);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/get-booking-by-timeframe")
     public ResponseEntity<List<BookingResponseDTO>> getBookingsWithinTimeframe(
             @RequestParam("start") String start,
@@ -59,12 +65,14 @@ public class BookingController {
         return ResponseEntity.ok(responses);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/get-all-bookings")
     public ResponseEntity<List<BookingResponseDTO>> getAllBookings() {
         List<BookingResponseDTO> responses = bookingService.getAllBookings();
         return ResponseEntity.ok(responses);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/delete-booking-by-code/{bookingCode}")
     public ResponseEntity<Boolean> deleteBookingByCode(@PathVariable String bookingCode) {
         boolean isDeleted = bookingService.deleteBookingByCode(bookingCode);

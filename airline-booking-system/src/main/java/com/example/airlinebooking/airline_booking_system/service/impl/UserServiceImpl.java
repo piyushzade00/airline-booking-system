@@ -9,14 +9,19 @@ import com.example.airlinebooking.airline_booking_system.mapper.UserMapper;
 import com.example.airlinebooking.airline_booking_system.repository.UserRepository;
 import com.example.airlinebooking.airline_booking_system.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -139,5 +144,17 @@ public class UserServiceImpl implements UserService {
     public static <T extends Enum<T>> boolean isValidEnumValueStream(Class<T> enumClass, String value) {
         return Arrays.stream(enumClass.getEnumConstants())
                 .anyMatch(e -> e.name().equalsIgnoreCase(value));
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserEntity userEntity = userRepository.findByUserName(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+
+        return new org.springframework.security.core.userdetails.User(
+                userEntity.getUserName(),
+                userEntity.getPassword(),
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + userEntity.getRole().name()))
+        );
     }
 }

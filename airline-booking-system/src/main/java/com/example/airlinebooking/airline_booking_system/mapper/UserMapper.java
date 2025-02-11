@@ -19,7 +19,7 @@ public class UserMapper {
         userEntity.setEmail(userRequestDTO.getEmail());
 
         // Set default role if not provided
-        userEntity.setRole(userRequestDTO.getRole() != null ? userRequestDTO.getRole() : UserRoles.CUSTOMER);
+        userEntity.setRole(userRequestDTO.getRole() != null ? userRequestDTO.getRole() : UserRoles.ROLE_CUSTOMER);
 
         return userEntity;
     }

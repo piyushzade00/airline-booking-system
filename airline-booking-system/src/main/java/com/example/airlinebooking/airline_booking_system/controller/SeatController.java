@@ -5,6 +5,7 @@ import com.example.airlinebooking.airline_booking_system.dto.seat.SeatResponseDT
 import com.example.airlinebooking.airline_booking_system.service.SeatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,28 +21,28 @@ public class SeatController {
         this.seatService = seatService;
     }
 
-    // Create a new seat
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create-seat")
     public ResponseEntity<SeatResponseDTO> createSeat(@RequestBody SeatRequestDTO seatRequestDTO) {
         SeatResponseDTO seatResponse = seatService.createSeat(seatRequestDTO);
         return ResponseEntity.ok(seatResponse);
     }
 
-    // Get all seats for a specific flight
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @GetMapping("/get-all-seats-by-flight/{flightNumber}")
     public ResponseEntity<List<SeatResponseDTO>> getAllSeatsByFlight(@PathVariable String flightNumber) {
         List<SeatResponseDTO> seats = seatService.getAllSeatsByFlight(flightNumber);
         return ResponseEntity.ok(seats);
     }
 
-    // Get available seats for a specific flight
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @GetMapping("/get-available-seats-by-flight/{flightNumber}")
     public ResponseEntity<List<SeatResponseDTO>> getAvailableSeatsByFlight(@PathVariable String flightNumber) {
         List<SeatResponseDTO> availableSeats = seatService.getAvailableSeatsByFlight(flightNumber);
         return ResponseEntity.ok(availableSeats);
     }
 
-    // Get seat details by seat numbers
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @PostMapping("/get-seat-details")
     public ResponseEntity<List<SeatResponseDTO>> getSeatDetails(
             @RequestParam String flightNumber,
@@ -51,7 +52,7 @@ public class SeatController {
         return ResponseEntity.ok(seatDetails);
     }
 
-    // Check if a seat is available
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @PostMapping("/is-seat-available")
     public ResponseEntity<Boolean> isSeatAvailable(
             @RequestParam String flightNumber,
@@ -61,14 +62,14 @@ public class SeatController {
         return ResponseEntity.ok(isAvailable);
     }
 
-    // Count available seats for a flight
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @GetMapping("/count-available-seats")
     public ResponseEntity<Long> countAvailableSeats(@RequestParam String flightNumber) {
         long count = seatService.countAvailableSeats(flightNumber);
         return ResponseEntity.ok(count);
     }
 
-    // Mark specific seats as unavailable
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/mark-seats-unavailable")
     public ResponseEntity<Void> markSeatsAsUnavailable(
             @RequestParam String flightNumber,

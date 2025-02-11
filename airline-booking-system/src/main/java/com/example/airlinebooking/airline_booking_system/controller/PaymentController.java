@@ -8,6 +8,7 @@ import com.example.airlinebooking.airline_booking_system.enums.PaymentStatus;
 import com.example.airlinebooking.airline_booking_system.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -25,36 +26,42 @@ public class PaymentController {
         this.paymentService = paymentService;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @PostMapping("/process-Payment")
     public ResponseEntity<PaymentResponseDTO> processPayment(@RequestBody PaymentRequestDTO paymentRequestDTO) {
         PaymentResponseDTO response = paymentService.processPayment(paymentRequestDTO);
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @GetMapping("/get-payment-by-id/{paymentId}")
     public ResponseEntity<PaymentResponseDTO> getPaymentById(@PathVariable Long paymentId) {
         PaymentResponseDTO response = paymentService.getPaymentById(paymentId);
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @GetMapping("/get-payment-by-status/{status}")
     public ResponseEntity<List<PaymentResponseDTO>> getPaymentsByStatus(@PathVariable PaymentStatus status) {
         List<PaymentResponseDTO> responses = paymentService.getPaymentsByStatus(status);
         return ResponseEntity.ok(responses);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @GetMapping("/get-payment-by-booking/{bookingCode}")
     public ResponseEntity<List<PaymentResponseDTO>> getPaymentsByBooking(@PathVariable String bookingCode) {
         List<PaymentResponseDTO> responses = paymentService.getPaymentsByBooking(bookingCode);
         return ResponseEntity.ok(responses);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @GetMapping("/get-payment-by-user")
     public ResponseEntity<List<PaymentResponseDTO>> getPaymentsByUser(@RequestBody UserEntity user) {
         List<PaymentResponseDTO> responses = paymentService.getPaymentsByUser(user);
         return ResponseEntity.ok(responses);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @GetMapping("/get-payment-by-booking-and-status")
     public ResponseEntity<List<PaymentResponseDTO>> getPaymentsByBookingAndStatus(
             @RequestParam String bookingCode, @RequestParam PaymentStatus status) {
@@ -62,6 +69,7 @@ public class PaymentController {
         return ResponseEntity.ok(responses);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @GetMapping("/get-payments-within-date-range")
     public ResponseEntity<List<PaymentResponseDTO>> getPaymentsWithinDateRange(
             @RequestParam LocalDateTime startDate, @RequestParam LocalDateTime endDate) {
@@ -69,12 +77,14 @@ public class PaymentController {
         return ResponseEntity.ok(responses);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @GetMapping("/total-amount-paid/{bookingCode}")
     public ResponseEntity<BigDecimal> getTotalAmountPaidForBooking(@PathVariable String bookingCode) {
         BigDecimal totalAmount = paymentService.getTotalAmountPaidForBooking(bookingCode);
         return ResponseEntity.ok(totalAmount);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @GetMapping("/method-exists")
     public ResponseEntity<Boolean> checkPaymentMethodExistsForBooking(
             @RequestParam String bookingCode, @RequestParam PaymentMethod paymentMethod) {
@@ -82,18 +92,21 @@ public class PaymentController {
         return ResponseEntity.ok(exists);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @GetMapping("/get-recent-payment/{bookingCode}")
     public ResponseEntity<PaymentResponseDTO> getMostRecentPaymentForBooking(@PathVariable String bookingCode) {
         PaymentResponseDTO response = paymentService.getMostRecentPaymentForBooking(bookingCode);
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/count-success")
     public ResponseEntity<Long> countSuccessfulPayments() {
         long count = paymentService.countSuccessfulPayments();
         return ResponseEntity.ok(count);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @GetMapping("/get-payment-by-method-and-status")
     public ResponseEntity<List<PaymentResponseDTO>> getPaymentsByMethodAndStatus(
             @RequestParam PaymentMethod paymentMethod, @RequestParam PaymentStatus status) {
@@ -101,6 +114,7 @@ public class PaymentController {
         return ResponseEntity.ok(responses);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete-payment/{paymentId}")
     public ResponseEntity<Boolean> deletePaymentByPaymentId(@PathVariable Long paymentId) {
         boolean deleted = paymentService.deletePaymentByPaymentId(paymentId);

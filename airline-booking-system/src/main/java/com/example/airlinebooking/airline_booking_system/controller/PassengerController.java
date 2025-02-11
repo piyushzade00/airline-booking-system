@@ -5,6 +5,7 @@ import com.example.airlinebooking.airline_booking_system.dto.passenger.Passenger
 import com.example.airlinebooking.airline_booking_system.service.PassengerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,12 +21,14 @@ public class PassengerController {
         this.passengerService = passengerService;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @PostMapping
     public ResponseEntity<PassengerResponseDTO> addPassenger(@RequestBody PassengerRequestDTO passengerRequestDTO) {
         PassengerResponseDTO response = passengerService.addPassenger(passengerRequestDTO);
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @GetMapping("/get-passengers-by-booking/{bookingCode}")
     public ResponseEntity<List<PassengerResponseDTO>> getPassengersByBooking(
             @PathVariable String bookingCode) {
@@ -33,6 +36,7 @@ public class PassengerController {
         return ResponseEntity.ok(passengers);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @GetMapping("/get-passengers-by-name/{passengerFullName}")
     public ResponseEntity<List<PassengerResponseDTO>> getPassengersByName(
             @PathVariable String passengerFullName) {
@@ -40,12 +44,14 @@ public class PassengerController {
         return ResponseEntity.ok(passengers);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @GetMapping("/get-all-passengers")
     public ResponseEntity<List<PassengerResponseDTO>> getAllPassengers() {
         List<PassengerResponseDTO> passengers = passengerService.getAllPassengers();
         return ResponseEntity.ok(passengers);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @DeleteMapping("/delete-passenger-by-id/{passengerId}")
     public ResponseEntity<String> deletePassengerById(@PathVariable Long passengerId) {
         boolean isDeleted = passengerService.deletePassengerById(passengerId);
