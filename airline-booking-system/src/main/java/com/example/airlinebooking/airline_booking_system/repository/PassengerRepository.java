@@ -6,13 +6,18 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PassengerRepository extends JpaRepository<PassengerEntity, Long> {
 
     PassengerEntity savePassengerEntity(PassengerEntity passengerEntity);
 
+    Optional<PassengerEntity> findByBooking_TicketNumber(String ticketNumber);
+
     List<PassengerEntity> findPassengerByBooking(BookingEntity booking);
+
+    List<PassengerEntity> findByBooking_Flight_FlightNumber(String flightNumber);
 
     List<PassengerEntity> findByPassengerFullName(String passengerFullName);
 

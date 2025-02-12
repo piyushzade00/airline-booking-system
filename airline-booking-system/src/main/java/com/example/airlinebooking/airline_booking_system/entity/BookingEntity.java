@@ -30,6 +30,9 @@ public class BookingEntity {
     @Column(name = "booking_code", nullable = false, unique = true, updatable = false)
     private String bookingCode;
 
+    @Column(name = "ticket_number", unique = true, nullable = false)
+    private String ticketNumber;
+
     @NotNull(message = "Booking date is required.")
     @Column(name = "booking_date", nullable = false)
     private LocalDateTime bookingDate;

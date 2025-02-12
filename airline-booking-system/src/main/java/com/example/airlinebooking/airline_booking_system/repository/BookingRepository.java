@@ -15,6 +15,8 @@ public interface BookingRepository extends JpaRepository<BookingEntity, Long> {
 
     BookingEntity saveBookingEntity(BookingEntity bookingEntity);
 
+    Optional<BookingEntity> findBookingEntityByBookingId(Long id);
+
     Optional<BookingEntity> findByBookingCode(String bookingCode);
 
     List<BookingEntity> findByUser(UserEntity user);

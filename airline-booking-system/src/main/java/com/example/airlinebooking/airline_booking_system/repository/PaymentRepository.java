@@ -35,6 +35,8 @@ public interface PaymentRepository extends JpaRepository<PaymentEntity, Long> {
     // Find payments by date range
     List<PaymentEntity> findByPaymentDateBetween(LocalDateTime startDate, LocalDateTime endDate);
 
+    Optional<PaymentEntity> findByBooking_BookingId(Long bookingId);
+
     // Get the total amount paid by a user for a booking
     @Query("SELECT SUM(p.amount) FROM PaymentEntity p WHERE p.booking = :booking AND p.paymentStatus = 'COMPLETED'")
     BigDecimal getTotalAmountPaid(BookingEntity booking);
