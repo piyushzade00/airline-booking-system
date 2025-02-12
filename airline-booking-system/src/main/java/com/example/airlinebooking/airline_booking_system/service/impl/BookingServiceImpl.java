@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.print.Pageable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -133,8 +134,8 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingResponseDTO> getAllBookings() {
-        return bookingRepository.findAllBookings()
+    public List<BookingResponseDTO> getAllBookings(Pageable pageable) {
+        return bookingRepository.findAllBookings(pageable)
                 .stream()
                 .map(bookingMapper::toResponseDTO)
                 .collect(Collectors.toList());

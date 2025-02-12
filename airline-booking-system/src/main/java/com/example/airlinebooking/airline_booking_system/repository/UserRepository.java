@@ -5,6 +5,7 @@ import com.example.airlinebooking.airline_booking_system.enums.UserRoles;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +24,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     List<UserEntity> findByRole(UserRoles role);
 
-    List<UserEntity> findAllUsers();
+    List<UserEntity> findAllUsers(Pageable pageable);
 
     boolean deleteByUserName(String userName);
 

@@ -5,11 +5,15 @@ import com.example.airlinebooking.airline_booking_system.service.PassengerListEx
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "Passenger List Management", description = "APIs for exporting passenger lists")
 @RestController
 @RequestMapping("/api/passenger-list")
 public class PassengerListController {
@@ -23,7 +27,9 @@ public class PassengerListController {
         this.mailService = mailService;
     }
 
-
+    @Operation(summary = "Export passenger list and send via email",
+            description = "Generates an Excel file containing the passenger list for a specific flight and emails it to the airline.")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/export")
     public ResponseEntity<String> exportPassengerList(@RequestParam String flightNumber,
                                                       @RequestParam String airlineEmail) throws MessagingException {

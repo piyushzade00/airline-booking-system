@@ -4,6 +4,7 @@ import com.example.airlinebooking.airline_booking_system.dto.booking.BookingRequ
 import com.example.airlinebooking.airline_booking_system.dto.booking.BookingResponseDTO;
 import com.example.airlinebooking.airline_booking_system.exception.ResourceNotFoundException;
 
+import java.awt.print.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public interface BookingService {
 
     List<BookingResponseDTO> getBookingsWithinTimeframe(LocalDateTime start, LocalDateTime end) throws IllegalArgumentException;
 
-    List<BookingResponseDTO> getAllBookings();
+    List<BookingResponseDTO> getAllBookings(Pageable pageable) throws IllegalArgumentException;
 
     boolean deleteBookingByCode(String bookingCode) throws IllegalArgumentException, ResourceNotFoundException;
 }

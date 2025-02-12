@@ -4,6 +4,7 @@ import com.example.airlinebooking.airline_booking_system.dto.user.UserRequestDTO
 import com.example.airlinebooking.airline_booking_system.dto.user.UserResponseDTO;
 import com.example.airlinebooking.airline_booking_system.enums.UserRoles;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 public interface UserService {
@@ -14,7 +15,7 @@ public interface UserService {
 
     UserResponseDTO getUserByEmail(String email);
 
-    List<UserResponseDTO> getAllUsers();
+    List<UserResponseDTO> getAllUsers(Pageable pageable);
 
     List<UserResponseDTO> getUsersByRole(UserRoles role);
 

@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Pageable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -80,8 +81,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public List<UserResponseDTO> getAllUsers() {
-        return userRepository.findAllUsers()
+    public List<UserResponseDTO> getAllUsers(Pageable pageable) {
+        return userRepository.findAllUsers(pageable)
                 .stream()
                 .map(userMapper::toResponseDTO)
                 .collect(Collectors.toList());

@@ -11,10 +11,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Tag(name = "Notification Management", description = "APIs for managing user notifications")
 @RestController
 @RequestMapping("/api/notifications")
 public class NotificationController {
@@ -26,6 +29,10 @@ public class NotificationController {
         this.notificationService = notificationService;
     }
 
+    @Operation(
+            summary = "Create a new notification",
+            description = "Creates a new notification and stores it in the system. Requires ADMIN role."
+    )
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create-notification")
     public ResponseEntity<NotificationResponseDTO> createNotification(
@@ -34,6 +41,10 @@ public class NotificationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @Operation(
+            summary = "Get notifications by username",
+            description = "Retrieves all notifications associated with a specific username."
+    )
     @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @GetMapping("/get-notification-by-username/{userName}")
     public ResponseEntity<List<NotificationResponseDTO>> getNotificationsByUser(
@@ -42,6 +53,10 @@ public class NotificationController {
         return ResponseEntity.ok(notifications);
     }
 
+    @Operation(
+            summary = "Get notifications by username and status",
+            description = "Fetches notifications for a user based on status (e.g., READ, UNREAD)."
+    )
     @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @GetMapping("/get-notifications-by-user-and-status")
     public ResponseEntity<List<NotificationResponseDTO>> getNotificationsByUserAndStatus(
@@ -50,6 +65,10 @@ public class NotificationController {
         return ResponseEntity.ok(notifications);
     }
 
+    @Operation(
+            summary = "Get notifications by username and type",
+            description = "Fetches notifications for a user based on notification type (e.g., EMAIL, SMS, PUSH)."
+    )
     @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @GetMapping("/get-notifications-by-user-and-type")
     public ResponseEntity<List<NotificationResponseDTO>> getNotificationsByUserAndType(
@@ -58,6 +77,10 @@ public class NotificationController {
         return ResponseEntity.ok(notifications);
     }
 
+    @Operation(
+            summary = "Get notifications after a specific date",
+            description = "Retrieves notifications for a user created after the specified date."
+    )
     @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @GetMapping("/get-notifications-after-date")
     public ResponseEntity<List<NotificationResponseDTO>> getNotificationsAfterDate(
@@ -67,6 +90,10 @@ public class NotificationController {
         return ResponseEntity.ok(notifications);
     }
 
+    @Operation(
+            summary = "Count unread notifications",
+            description = "Returns the number of unread notifications for a given username."
+    )
     @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
     @GetMapping("/count-unread-notifications/{userName}")
     public ResponseEntity<Long> countUnreadNotifications(@PathVariable String userName) {
@@ -74,6 +101,10 @@ public class NotificationController {
         return ResponseEntity.ok(unreadCount);
     }
 
+    @Operation(
+            summary = "Delete notifications before a specific date",
+            description = "Deletes all notifications for a user that were created before the specified date. Requires ADMIN role."
+    )
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete-notifications-before-date")
     public ResponseEntity<Boolean> deleteNotificationsBeforeDate(
@@ -83,6 +114,10 @@ public class NotificationController {
         return ResponseEntity.ok(isDeleted);
     }
 
+    @Operation(
+            summary = "Delete all notifications for a user",
+            description = "Deletes all notifications associated with a specific username. Requires ADMIN role."
+    )
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete-notifications-by-user/{userName}")
     public ResponseEntity<Boolean> deleteNotificationsByUser(@PathVariable String userName) {

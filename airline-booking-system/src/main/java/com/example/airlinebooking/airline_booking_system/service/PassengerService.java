@@ -4,6 +4,7 @@ import com.example.airlinebooking.airline_booking_system.dto.passenger.Passenger
 import com.example.airlinebooking.airline_booking_system.dto.passenger.PassengerResponseDTO;
 import com.example.airlinebooking.airline_booking_system.entity.BookingEntity;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 public interface PassengerService {
@@ -14,7 +15,7 @@ public interface PassengerService {
 
     List<PassengerResponseDTO> getPassengersByName(String passengerFullName);
 
-    List<PassengerResponseDTO> getAllPassengers();
+    List<PassengerResponseDTO> getAllPassengers(Pageable pageable);
 
     boolean deletePassengerById(Long passengerId);
 }

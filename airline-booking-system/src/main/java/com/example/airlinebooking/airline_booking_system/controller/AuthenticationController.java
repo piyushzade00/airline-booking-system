@@ -7,6 +7,7 @@ import com.example.airlinebooking.airline_booking_system.dto.user.UserResponseDT
 import com.example.airlinebooking.airline_booking_system.security.JwtUtil;
 import com.example.airlinebooking.airline_booking_system.service.TokenBlacklistService;
 import com.example.airlinebooking.airline_booking_system.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,8 +16,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "Authentication", description = "APIs for user authentication and authorization")
 @RestController
 @RequestMapping("/auth")
 public class AuthenticationController {
@@ -37,9 +42,9 @@ public class AuthenticationController {
         this.tokenBlacklistService = tokenBlacklistService;
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
+    @Operation(summary = "User Login", description = "Authenticates user and returns a JWT token")
     @PostMapping("/login")
-    public AuthResponseDTO login(@RequestBody AuthRequestDTO authRequest) {
+    public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody AuthRequestDTO authRequest) {
         try {
             // Authenticate the user
             Authentication authentication = authenticationManager.authenticate(
@@ -48,25 +53,25 @@ public class AuthenticationController {
 
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-            // Generate JWT token
             String jwtToken = jwtUtil.generateToken(userDetails);
 
-            return new AuthResponseDTO(jwtToken, "Login successful");
+            return ResponseEntity.ok(new AuthResponseDTO(jwtToken, "Login successful"));
         } catch (AuthenticationException ex) {
-            throw new RuntimeException("Invalid username or password");
+            return ResponseEntity.badRequest().body(new AuthResponseDTO(null, "Invalid username or password"));
         }
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
+    @Operation(summary = "User Registration", description = "Registers a new user")
     @PostMapping("/register")
-    public UserResponseDTO register(@RequestBody UserRequestDTO userRequest) {
-        return userService.createUser(userRequest);
+    public ResponseEntity<UserResponseDTO> register(@Valid @RequestBody UserRequestDTO userRequest) {
+        UserResponseDTO userResponse = userService.createUser(userRequest);
+        return ResponseEntity.ok(userResponse);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER', 'AGENT')")
+    @Operation(summary = "User Logout", description = "Logs out the user by blacklisting the token")
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@RequestHeader("Authorization") String tokenHeader) {
-        if (tokenHeader == null || !tokenHeader.startsWith("Bearer ")) {
+        if (!StringUtils.hasText(tokenHeader) || !tokenHeader.startsWith("Bearer ")) {
             return ResponseEntity.badRequest().body("Invalid token");
         }
 

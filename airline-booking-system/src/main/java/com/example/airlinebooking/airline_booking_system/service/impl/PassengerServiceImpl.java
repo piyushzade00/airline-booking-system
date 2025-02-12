@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -93,8 +94,8 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
-    public List<PassengerResponseDTO> getAllPassengers() {
-        return passengerRepository.findAllPassengers()
+    public List<PassengerResponseDTO> getAllPassengers(Pageable pageable) {
+        return passengerRepository.findAllPassengers(pageable)
                 .stream()
                 .map(passengerMapper::toResponseDTO)
                 .collect(Collectors.toList());

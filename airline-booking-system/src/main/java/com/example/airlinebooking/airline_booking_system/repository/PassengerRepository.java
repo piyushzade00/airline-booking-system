@@ -5,6 +5,7 @@ import com.example.airlinebooking.airline_booking_system.entity.PassengerEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +22,7 @@ public interface PassengerRepository extends JpaRepository<PassengerEntity, Long
 
     List<PassengerEntity> findByPassengerFullName(String passengerFullName);
 
-    List<PassengerEntity> findAllPassengers();
+    List<PassengerEntity> findAllPassengers(Pageable pageable);
 
     boolean deleteByPassengerId(Long passengerId);
 
